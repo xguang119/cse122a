@@ -28,7 +28,7 @@ module tb ();
 `endif
 
   // Replace tt_um_example with your module name:
-  tt_um_example user_project (
+  tt_um_simple_alu (
 
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST
@@ -45,5 +45,81 @@ module tb ();
       .clk    (clk),      // clock
       .rst_n  (rst_n)     // not reset
   );
+
+   integer op, a, b;
+  logic [3:0] result;
+  logic [2:0] expected_result;
+  logic expected_carry;
+  logic expected_zero;
+  logic expected_negative;
+
+  initial begin
+    clk = 0;
+    rst_n = 1;
+    ena = 1;
+    ui_in = 8'b0;
+    uio_in = 8'b0;
+
+    $display("Starting Simple ALU Testbench");
+
+    // Test all opcodes and all A/B combinations
+    for (op = 0; op < 4; op = op + 1) begin
+      for (a = 0; a < 8; a = a + 1) begin
+        for (b = 0; b < 8; b = b + 1) begin
+
+          ui_in = {op[1:0], a[2:0], b[2:0]};
+          #10;
+
+          // Compute expected values
+          result = 4'b0000;
+          expected_carry = 1'b0;
+
+          case (op)
+            2'b00: begin //ADD
+              result = a + b;
+              expected_carry = result[3];
+            end
+            2'b01: begin //SUBTRACT
+              result = a - b;
+              expected_carry = result[3];
+            end
+            2'b10: begin //AND
+              result = a & b;
+            end
+            2'b11: begin //OR
+              result = a | b;
+            end
+          endcase
+
+          expected_result = result[2:0];
+          expected_zero = (expected_result == 3'b000);
+          expected_negative = expected_result[2];
+
+          if (uo_out[3:1] !== expected_result)
+            $fatal("FAIL RESULT: op=%b A=%0d B=%0d got=%b exp=%b",
+                   op, a, b, uo_out[3:1], expected_result);
+
+          if (uo_out[4] !== expected_zero)
+            $fatal("FAIL ZERO: op=%b A=%0d B=%0d got=%b exp=%b",
+                   op, a, b, uo_out[4], expected_zero);
+
+          if (uo_out[5] !== expected_carry)
+            $fatal("FAIL CARRY: op=%b A=%0d B=%0d got=%b exp=%b",
+                   op, a, b, uo_out[5], expected_carry);
+
+          if (uo_out[6] !== expected_negative)
+            $fatal("FAIL NEGATIVE: op=%b A=%0d B=%0d got=%b exp=%b",
+                   op, a, b, uo_out[6], expected_negative);
+
+        end
+      end
+    end
+
+    $display("TESTS PASSED");
+    $finish;
+  end
+
+
+   
 
 endmodule
