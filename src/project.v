@@ -29,7 +29,7 @@ module tt_um_simple_alu (
         carry = 1'b0;
         answer = 4'b0000;
 
-        case (opcode)
+        case (OPCODE)
             2'b00: begin //ADD
                 answer = A + B;
                 result = answer[2:0];
@@ -40,21 +40,21 @@ module tt_um_simple_alu (
                 result = answer[2:0];
                 carry = answer[3];
             end
-            2'b00: begin //AND
+            2'b10: begin //AND
                 result = A & B;
             end
-            2'b01: begin //OR
+            2'b11: begin //OR
                 result = A | B;
             end
         endcase
     end
 
-    logic zero = (result = 3'b000);
-    logic negative = result[2];
+    wire [0:0] zero = (result == 3'b000);
+    wire [0:0] negative = result[2];
 
     //OUTPUT format:
     //[unused, negative, carry, zero, result, unused]
-    assign uo_out = {1,b0, negative, carry, zero, result, 1'b0};
+    assign uo_out = {1'b0, negative, carry, zero, result, 1'b0};
     assign uio_out = 0;
     assign uio_oe = 0;
 
@@ -62,3 +62,5 @@ module tt_um_simple_alu (
     wire _unused = &{ena, clk, rst_n, uio_in, 1'b0};
 
 endmodule
+
+`default_nettype wire

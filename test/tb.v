@@ -28,7 +28,7 @@ module tb ();
 `endif
 
   // Replace tt_um_example with your module name:
-  tt_um_simple_alu (
+  tt_um_simple_alu dut (
 
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST
@@ -96,19 +96,19 @@ module tb ();
           expected_negative = expected_result[2];
 
           if (uo_out[3:1] !== expected_result)
-            $fatal("FAIL RESULT: op=%b A=%0d B=%0d got=%b exp=%b",
+            $fatal(1, "FAIL RESULT: op=%b A=%0d B=%0d got=%b exp=%b",
                    op, a, b, uo_out[3:1], expected_result);
 
           if (uo_out[4] !== expected_zero)
-            $fatal("FAIL ZERO: op=%b A=%0d B=%0d got=%b exp=%b",
+            $fatal(1, "FAIL ZERO: op=%b A=%0d B=%0d got=%b exp=%b",
                    op, a, b, uo_out[4], expected_zero);
 
           if (uo_out[5] !== expected_carry)
-            $fatal("FAIL CARRY: op=%b A=%0d B=%0d got=%b exp=%b",
+            $fatal(1, "FAIL CARRY: op=%b A=%0d B=%0d got=%b exp=%b",
                    op, a, b, uo_out[5], expected_carry);
 
           if (uo_out[6] !== expected_negative)
-            $fatal("FAIL NEGATIVE: op=%b A=%0d B=%0d got=%b exp=%b",
+            $fatal(1, "FAIL NEGATIVE: op=%b A=%0d B=%0d got=%b exp=%b",
                    op, a, b, uo_out[6], expected_negative);
 
         end
@@ -116,7 +116,7 @@ module tb ();
     end
 
     $display("TESTS PASSED");
-    $finish;
+
   end
 
 
