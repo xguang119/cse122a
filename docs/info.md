@@ -12,11 +12,17 @@ You can also include images in this folder and reference them in the markdown. E
 My project is a simple 4 operation ALU that operates on two 3-bit wide values, A and B.
 
 input[5:3] is A
+
 input[2:0] is B
+
 input[7:6] contains the 2-bit opcode and selects the operation as follows:
+
 2'b00: Addition (A+B)
+
 2'b01: Subtraction (A-B)
+
 2'b10: AND (A&B)
+
 2'b11: OR (A|B)
 
 ## How to test
